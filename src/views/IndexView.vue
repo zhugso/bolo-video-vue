@@ -1,7 +1,18 @@
 <script setup>
+import api from '@/api';
 import CarouselImage from '@/components/CarouselImage.vue';
 import HeaderNav from '@/components/HeaderNav.vue';
 import VideoCard from '@/components/VideoCard.vue';
+import { onMounted, ref } from 'vue';
+
+const videoList = ref([{}]);
+
+onMounted(() => {
+  api.get('/user/getVideoList').then((res) => {
+    console.log(res);
+    videoList.value = res.data;
+  });
+});
 </script>
 
 <template>
@@ -27,7 +38,14 @@ import VideoCard from '@/components/VideoCard.vue';
       </div>
 
       <div class="videos" v-for="i in 25" :key="i">
-        <VideoCard></VideoCard>
+        <VideoCard
+          videoId="1"
+          title="22"
+          coverUrl="333"
+          userId="444"
+          username="55"
+          uploadTime="66"
+        ></VideoCard>
       </div>
     </div>
 

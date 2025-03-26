@@ -10,9 +10,10 @@ const router = createRouter({
       component: () => import('../views/IndexView.vue'),
     },
     {
-      path: '/video',
+      path: '/video/:videoId',
       name: 'Video',
       component: () => import('../views/VideoView.vue'),
+      props: true,
     },
     {
       path: '/search/:input',

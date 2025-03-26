@@ -1,8 +1,13 @@
 <script setup>
 import HeaderNav from '@/components/HeaderNav.vue';
 import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import Player from 'xgplayer';
 import 'xgplayer/dist/index.min.css';
+
+const route = useRoute();
+
+console.log(route.videoId);
 
 onMounted(() => {
   new Player({

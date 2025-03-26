@@ -1,14 +1,17 @@
-<script setup></script>
+<script setup>
+const props = defineProps(['videoId', 'title', 'coverUrl', 'userId', 'username', 'uploadTime']);
+
+// console.log(props);
+</script>
 
 <template>
   <div class="video-card">
-    <el-link class="video-cover-be" :underline="false">
+    <el-link class="video-cover-be" :underline="false" :href="'/video/' + videoId">
       <img class="video-cover" src="@/assets/testimg/大舅妈.jpg" />
     </el-link>
-    <el-link :underline="false">
+    <el-link :underline="false" :href="'/video/' + videoId">
       <el-text class="video-title" line-clamp="2">
-        The -webkit-line-clamp CSS property allows limiting of the contents of a block to the
-        specified number of lines.
+        {{ title }}
       </el-text>
     </el-link>
 
@@ -17,7 +20,7 @@
         <el-icon>
           <User />
         </el-icon>
-        <div>aaa · 2-22</div>
+        <div>{{ username }} · {{ uploadTime }}</div>
       </el-link>
     </div>
   </div>
