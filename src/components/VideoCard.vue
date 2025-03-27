@@ -1,13 +1,17 @@
 <script setup>
 const props = defineProps(['videoId', 'title', 'coverUrl', 'userId', 'username', 'uploadTime']);
+const resBaseUrl = 'http://localhost:9000/bolo/';
 
-// console.log(props);
+const dateHandle = (uploadTime) => {
+  const ud = new Date(uploadTime);
+  return ud.getMonth() + 1 + '-' + ud.getDate();
+};
 </script>
 
 <template>
   <div class="video-card">
     <el-link class="video-cover-be" :underline="false" :href="'/video/' + videoId">
-      <img class="video-cover" src="@/assets/testimg/大舅妈.jpg" />
+      <img class="video-cover" :src="resBaseUrl + coverUrl" />
     </el-link>
     <el-link :underline="false" :href="'/video/' + videoId">
       <el-text class="video-title" line-clamp="2">
@@ -20,7 +24,10 @@ const props = defineProps(['videoId', 'title', 'coverUrl', 'userId', 'username',
         <el-icon>
           <User />
         </el-icon>
-        <div>{{ username }} · {{ uploadTime }}</div>
+        <div>
+          {{ username }} ·
+          {{ dateHandle(uploadTime) }}
+        </div>
       </el-link>
     </div>
   </div>

@@ -8,7 +8,7 @@ import { onMounted, ref } from 'vue';
 const videoList = ref([{}]);
 
 onMounted(() => {
-  api.get('/user/getVideoList').then((res) => {
+  api.get('/user/getVideoCardList').then((res) => {
     console.log(res);
     videoList.value = res.data;
   });
@@ -37,14 +37,14 @@ onMounted(() => {
         <VideoCard></VideoCard>
       </div>
 
-      <div class="videos" v-for="i in 25" :key="i">
+      <div class="videos" v-for="i in videoList" :key="i">
         <VideoCard
-          videoId="1"
-          title="22"
-          coverUrl="333"
-          userId="444"
-          username="55"
-          uploadTime="66"
+          :videoId="i.videoId"
+          :title="i.title"
+          :coverUrl="i.coverUrl"
+          :userId="i.userId"
+          :username="i.nickname"
+          :uploadTime="i.uploadTime"
         ></VideoCard>
       </div>
     </div>

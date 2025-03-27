@@ -1,18 +1,34 @@
 <script setup>
+import api from '@/api';
 import HeaderNav from '@/components/HeaderNav.vue';
-import { onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
 import Player from 'xgplayer';
 import 'xgplayer/dist/index.min.css';
 
-const route = useRoute();
+const props = defineProps(['videoId']);
+const resBaseUrl = 'http://localhost:9000/bolo/';
+const data = ref({});
+const formatDate = (datetime) => {
+  console.log('时间：', datetime);
+  const year = datetime.getFullYear();
+  const month = ('0' + (datetime.getMonth() + 1)).slice(-2);
+  const day = ('0' + datetime.getDate()).slice(-2);
+  const hours = ('0' + datetime.getHours()).slice(-2);
+  const minutes = ('0' + datetime.getMinutes()).slice(-2);
+  const seconds = ('0' + datetime.getSeconds()).slice(-2);
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
 
-console.log(route.videoId);
+onMounted(async () => {
+  await api.get('/user/videos/' + props.videoId).then((res) => {
+    console.log(res);
+    data.value = res.data;
+    console.log('data:', data);
+  });
 
-onMounted(() => {
   new Player({
     id: 'xgplayer',
-    url: 'http://localhost:9000/bolo/v/17426530743458bbe0eb0-bf7d-436d-aba9-5d5c1cf00cf4',
+    url: resBaseUrl + data.value.videoUrl,
     height: '566px',
     width: '1006px',
   });
@@ -25,16 +41,16 @@ onMounted(() => {
     <div class="main">
       <div class="left">
         <div class="video-info">
-          <div class="title">title</div>
+          <div class="title">{{ data.title }}</div>
           <div class="info-detail">
             <div class="video-counts">
               <el-icon size="20px" style="margin-right: 4px">
                 <VideoPlay />
               </el-icon>
-              <div>11111</div>
+              <div>{{ data.playCount }}</div>
             </div>
-            <div class="video-up-date">2025-02-21 17:53:13</div>
-            <div class="video-copyright">
+            <div class="video-up-date">{{ formatDate(new Date(data.uploadTime)) }}</div>
+            <div class="video-copyright" v-if="data.copyright === '1'">
               <el-icon color="#fd676f" size="16px" style="margin-right: 2px">
                 <CircleCloseFilled />
               </el-icon>
@@ -64,19 +80,19 @@ onMounted(() => {
           </div>
         </div>
         <div class="video-desc">
-          <el-text line-clamp="2"> aaaaaaaaaadsajfalsdjfasj </el-text>
+          <el-text line-clamp="2">{{ data.description }}</el-text>
         </div>
       </div>
       <div class="right">
         <div class="user-up">
           <div>
             <el-link :underline="false">
-              <el-avatar :size="48"> user </el-avatar>
+              <el-avatar :size="48" :src="data.avatarUrl"> user </el-avatar>
             </el-link>
           </div>
           <div class="user-info">
             <div class="user-detail">
-              <el-link class="user-up-name" :underline="false"> 用户名 </el-link>
+              <el-link class="user-up-name" :underline="false"> {{ data.nickname }} </el-link>
               <el-link class="to-up-send-msg" :underline="false">
                 <el-icon size="13px" style="margin-top: 2px">
                   <Message />
@@ -85,7 +101,7 @@ onMounted(() => {
               </el-link>
             </div>
 
-            <el-text class="user-up-desc" line-clamp="1">简介aaaa</el-text>
+            <el-text class="user-up-desc" line-clamp="1">{{ data.signature }}</el-text>
 
             <el-button class="user-up-subscribe-btn" type="primary" icon="Plus">
               <div>关注</div>
