@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['videoId', 'title', 'coverUrl', 'userId', 'username', 'uploadTime']);
+defineProps(['loading', 'videoId', 'title', 'coverUrl', 'userId', 'username', 'uploadTime']);
 const resBaseUrl = 'http://localhost:9000/bolo/';
 
 const dateHandle = (uploadTime) => {
@@ -9,28 +9,51 @@ const dateHandle = (uploadTime) => {
 </script>
 
 <template>
-  <div class="video-card">
-    <el-link class="video-cover-be" :underline="false" :href="'/video/' + videoId">
-      <img class="video-cover" :src="resBaseUrl + coverUrl" />
-    </el-link>
-    <el-link :underline="false" :href="'/video/' + videoId">
-      <el-text class="video-title" line-clamp="2">
-        {{ title }}
-      </el-text>
-    </el-link>
+  <el-skeleton
+    style="width: 100%; height: 100%"
+    animated
+    :loading="loading"
+    :throttle="{ leading: 500, trailing: 500, initVal: true }"
+  >
+    <template #template>
+      <el-skeleton-item
+        variant="image"
+        style="width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 5px"
+      />
 
-    <div class="video-user">
-      <el-link :underline="false">
-        <el-icon>
-          <User />
-        </el-icon>
-        <div>
-          {{ username }} ·
-          {{ dateHandle(uploadTime) }}
+      <div style="margin-top: 10px">
+        <el-skeleton-item variant="text" style="width: 100%" />
+        <el-skeleton-item variant="text" style="width: 80%" />
+        <el-skeleton-item variant="text" style="width: 40%" />
+      </div>
+    </template>
+
+    <template #default>
+      <div class="video-card">
+        <el-link class="video-cover-be" :underline="false" :href="'/video/' + videoId">
+          <img class="video-cover" :src="resBaseUrl + coverUrl" />
+        </el-link>
+
+        <el-link :underline="false" :href="'/video/' + videoId">
+          <el-text class="video-title" line-clamp="2">
+            {{ title }}
+          </el-text>
+        </el-link>
+
+        <div class="video-user">
+          <el-link :underline="false">
+            <el-icon>
+              <User />
+            </el-icon>
+            <div>
+              {{ username }} ·
+              {{ dateHandle(uploadTime) }}
+            </div>
+          </el-link>
         </div>
-      </el-link>
-    </div>
-  </div>
+      </div>
+    </template>
+  </el-skeleton>
 </template>
 
 <style lang="less" scoped>
@@ -47,6 +70,9 @@ const dateHandle = (uploadTime) => {
 
     .video-cover {
       width: 100%;
+      height: auto;
+      aspect-ratio: 16/9; // 设置宽高比
+
       object-fit: contain;
       transition: all 0.4s;
     }

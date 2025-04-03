@@ -1,18 +1,33 @@
 <script setup>
+import api from '@/api';
 import HeaderNav from '@/components/HeaderNav.vue';
 import VideoCard from '@/components/VideoCard.vue';
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const inputValue = ref('');
+const videoList = ref([]);
+
+// 获取搜索视频结果
+const searchClickHandle = () => {
+  if (inputValue.value !== '') router.push(`/search/${inputValue.value}`);
+  api.get(`/user/search-videos/${inputValue.value}?page=${1}`).then((res) => {
+    videoList.value = res.data;
+    console.log(res);
+  });
+};
 
 inputValue.value = route.params.input;
 
-if (inputValue.value !== '') {
-  // 发起请求获取搜索结果
-  console.log('aaaa');
-}
+onMounted(() => {
+  if (inputValue.value !== '') {
+    // 发起请求获取搜索结果
+    console.log('search:', inputValue.value);
+    searchClickHandle();
+  }
+});
 </script>
 
 <template>
@@ -21,7 +36,7 @@ if (inputValue.value !== '') {
     <div class="search-header">
       <el-input class="search-input" v-model="inputValue" prefix-icon="Search" clearable>
         <template #append>
-          <el-button class="input-btn">搜索</el-button>
+          <el-button class="input-btn" @click="searchClickHandle">搜索</el-button>
         </template>
       </el-input>
       <div class="search-order">
@@ -33,9 +48,20 @@ if (inputValue.value !== '') {
     </div>
 
     <div class="search-results">
-      <div class="video-res" v-for="i in 25" :key="i">
-        <VideoCard></VideoCard>
+      <div class="video-res" v-for="i in videoList" :key="i">
+        <VideoCard
+          :loading="false"
+          :videoId="i.videoId"
+          :title="i.title"
+          :coverUrl="i.coverUrl"
+          :userId="i.userId"
+          :username="i.nickname"
+          :uploadTime="i.uploadTime"
+        ></VideoCard>
       </div>
+    </div>
+    <div class="search-pages">
+      <el-pagination background layout="prev, pager, next" :total="2" default-page-size="30" />
     </div>
   </div>
 </template>
@@ -53,7 +79,7 @@ if (inputValue.value !== '') {
       height: 48px;
       font-size: 18px;
 
-      /deep/.el-input__inner {
+      :deep(.el-input__inner) {
         color: #18191c;
       }
 
@@ -84,6 +110,11 @@ if (inputValue.value !== '') {
     row-gap: 40px;
     column-gap: 16px;
     padding: 30px 64px 0;
+  }
+  .search-pages {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0 20px 0;
   }
 }
 </style>

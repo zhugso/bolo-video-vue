@@ -3,16 +3,114 @@ import api from '@/api';
 import CarouselImage from '@/components/CarouselImage.vue';
 import HeaderNav from '@/components/HeaderNav.vue';
 import VideoCard from '@/components/VideoCard.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
-const videoList = ref([{}]);
+// const recommendVideoList = ref([{}]);
+const videoList = ref([]);
+
+// 获取首页推荐视频
+// const getRecommendVideoList = () => {
+//   api.get(`/user/recommendVideoCards/11`).then((res) => {
+//     console.log(res);
+//     recommendVideoList.value = res.data;
+//   });
+// };
+
+// 获取视频流
+const loading = ref([15]);
+let loadingCount = ref(0);
+let noMore = false;
+
+const scrollHandle = () => {
+  console.log(videoList.value);
+
+  if (noMore) {
+    return;
+  }
+  noMore = true;
+
+  loading.value[loadingCount] = true;
+  console.log('aaa');
+  api.get('/user/videoCards/15').then((res) => {
+    console.log(res);
+    // 将数据添加到videoList
+    videoList.value = videoList.value.concat(res.data);
+    noMore = false;
+  });
+};
 
 onMounted(() => {
-  api.get('/user/getVideoCardList').then((res) => {
-    console.log(res);
-    videoList.value = res.data;
-  });
+  window.addEventListener('scroll', windowScroll, true);
+
+  scrollHandle();
+
+  // getRecommendVideoList();
 });
+
+onUnmounted(() => {
+  alert('销毁Scroll');
+
+  window.removeEventListener('scroll', windowScroll, true);
+  window.Event;
+});
+
+// onBeforeRouteLeave(() => {
+//   alert('销毁Scroll');
+//   window.removeEventListener('scroll', windowScroll, true);
+// });
+
+//获取当前可视范围的高度
+const getClientHeight = () => {
+  var clientHeight = 0;
+  if (document.body.clientHeight && document.documentElement.clientHeight) {
+    clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+  } else {
+    clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+  }
+  return clientHeight;
+};
+
+//获取文档完整的高度
+const getScrollHeight = () => {
+  return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+};
+
+//获取当前滚动条的位置
+const getScrollTop = () => {
+  var scrollTop = 0;
+  //window.pageYOffset = document.documentElement.scrollTop
+  if (document.documentElement && document.documentElement.scrollTop) {
+    scrollTop = document.documentElement.scrollTop;
+  } else if (document.body) {
+    scrollTop = document.body.scrollTop;
+  }
+  return scrollTop;
+};
+
+//回调函数
+const windowScroll = () => {
+  //获取三个值
+  let scrollTop = getScrollTop();
+  let clientHeight = getClientHeight();
+  let scrollHeight = getScrollHeight();
+
+  console.log(
+    'scrollTop:',
+    scrollTop,
+    'clientHeight:',
+    clientHeight,
+    'scrollHeight:',
+    scrollHeight,
+    'scrollTop+clientHeight:',
+    scrollTop + clientHeight,
+  );
+
+  //如果满足公式则，确实到底了
+  if (scrollTop + clientHeight + 1 >= scrollHeight) {
+    console.log('滚动到底啦-----ssssssssssssss');
+    scrollHandle();
+  }
+};
 </script>
 
 <template>
@@ -34,11 +132,13 @@ onMounted(() => {
         :key="i"
         :style="[index > 5 ? 'margin-top: 40px' : '']"
       >
-        <VideoCard></VideoCard>
+        <VideoCard :loading="true"></VideoCard>
       </div>
 
+      <!-- <div v-infinite-scroll="scrollHandle"> -->
       <div class="videos" v-for="i in videoList" :key="i">
         <VideoCard
+          :loading="false"
           :videoId="i.videoId"
           :title="i.title"
           :coverUrl="i.coverUrl"
@@ -48,6 +148,7 @@ onMounted(() => {
         ></VideoCard>
       </div>
     </div>
+    <!-- </div> -->
 
     <el-backtop :right="90" :bottom="100">
       <div class="up">
@@ -84,6 +185,7 @@ onMounted(() => {
 
   .main {
     display: grid;
+    // position: relative;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 20px;
 
