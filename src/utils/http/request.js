@@ -1,6 +1,8 @@
 // src/utils/request.js
+import router from '@/router';
 import { useTokenStore } from '@/stores/token';
 import axios from 'axios';
+import { ElMessage } from 'element-plus';
 
 const service = axios.create({
   // baseURL: process.env.VUE_APP_API_BASE_URL, // 通过环境变量配置
@@ -39,14 +41,16 @@ service.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    // 统一错误处理（示例）
+    // 统一错误处理（示例） 601 token无效
     if (error.response.status === '601') {
       // 清除token
       const tokenStore = useTokenStore();
       tokenStore.setToken('');
 
-      alert('登录过期，请重新登录');
-      window.location.href = '/login';
+      ElMessage.error('登录过期，请重新登录!');
+      router.push('/index');
+    } else if (error.response.status === '501') {
+      ElMessage.error('系统异常，请稍后重试!');
     }
     return Promise.reject(error);
   },

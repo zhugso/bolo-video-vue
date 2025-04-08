@@ -48,10 +48,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  alert('销毁Scroll');
-
+  // 销毁Scroll
   window.removeEventListener('scroll', windowScroll, true);
-  window.Event;
 });
 
 // onBeforeRouteLeave(() => {
