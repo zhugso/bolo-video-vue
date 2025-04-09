@@ -41,15 +41,18 @@ service.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    console.log('响应拦截器error：', error);
+    const code = error.response.data.code;
+
     // 统一错误处理（示例） 601 token无效
-    if (error.response.status === '601') {
+    if (code === '601') {
       // 清除token
       const tokenStore = useTokenStore();
       tokenStore.setToken('');
 
       ElMessage.error('登录过期，请重新登录!');
-      router.push('/index');
-    } else if (error.response.status === '501') {
+      router.push('/');
+    } else if (code === '501') {
       ElMessage.error('系统异常，请稍后重试!');
     }
     return Promise.reject(error);

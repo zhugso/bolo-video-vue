@@ -1,7 +1,7 @@
 <script setup>
 import api from '@/api';
 import { useTokenStore } from '@/stores/token';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const { inputhidden = true } = defineProps(['inputhidden']);
@@ -9,7 +9,15 @@ const { inputhidden = true } = defineProps(['inputhidden']);
 const router = useRouter();
 const tokenStore = useTokenStore();
 const inputValue = ref('');
-const isLogin = ref(true);
+const isLogin = ref(false);
+
+const headInfoDate = ref({
+  avatarUrl: '',
+  dynamicNums: 0,
+  fansNums: 0,
+  followNums: 0,
+  nickname: '',
+});
 
 // 搜索框
 const search = () => {
@@ -34,6 +42,18 @@ const logout = () => {
   api.get('/user/logout');
   router.push('/');
 };
+
+onMounted(async () => {
+  await api.get('/user/head-user').then((res) => {
+    // console.log(res);
+    headInfoDate.value = res.data;
+  });
+  if (!tokenStore.getToken) {
+    isLogin.value = false;
+  } else {
+    isLogin.value = true;
+  }
+});
 </script>
 
 <template>
@@ -69,7 +89,7 @@ const logout = () => {
               popper-style="box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px; padding: 20px;"
             >
               <template #reference>
-                <el-avatar src=""> 登录 </el-avatar>
+                <el-avatar :src="headInfoDate.avatarUrl"> 登录 </el-avatar>
               </template>
               <template #default>
                 <div style="display: flex; gap: 16px; flex-direction: column">
@@ -78,16 +98,30 @@ const logout = () => {
                     v-if="isLogin"
                     style="display: flex; flex-direction: column; color: #18191c"
                   >
-                    <div style="font-size: 18px; align-self: center">title</div>
+                    <div style="font-size: 18px; align-self: center">
+                      {{ headInfoDate.nickname }}
+                    </div>
                     <el-row style="margin-top: 20px">
                       <el-col style="text-align: center" :span="8">
-                        <el-statistic title="关注" :value="500" :formatter="formatterHandle" />
+                        <el-statistic
+                          title="关注"
+                          :value="headInfoDate.followNums"
+                          :formatter="formatterHandle"
+                        />
                       </el-col>
                       <el-col style="text-align: center" :span="8">
-                        <el-statistic title="粉丝" :value="50000" :formatter="formatterHandle" />
+                        <el-statistic
+                          title="粉丝"
+                          :value="headInfoDate.fansNums"
+                          :formatter="formatterHandle"
+                        />
                       </el-col>
                       <el-col style="text-align: center" :span="8">
-                        <el-statistic title="动态" :value="500" :formatter="formatterHandle" />
+                        <el-statistic
+                          title="动态"
+                          :value="headInfoDate.dynamicNums"
+                          :formatter="formatterHandle"
+                        />
                       </el-col>
                     </el-row>
 

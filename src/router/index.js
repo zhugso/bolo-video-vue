@@ -84,8 +84,8 @@ router.beforeEach((to, from, next) => {
   const tokenStore = useTokenStore();
   console.log(!tokenStore.getToken);
 
-  if (to.name !== 'Login' && to.name !== '' && !tokenStore.getToken) {
-    next({ name: 'Login' });
+  if (to.name !== 'Login' && to.name !== 'Index' && !tokenStore.getToken) {
+    next({ name: 'Index' });
   } else {
     next();
   }
