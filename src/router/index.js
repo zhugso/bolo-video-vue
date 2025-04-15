@@ -76,6 +76,11 @@ const router = createRouter({
       name: 'Login',
       component: () => import('../views/LoginView.vue'),
     },
+    {
+      path: '/space',
+      name: 'Space',
+      component: () => import('../views/SpaceView.vue'),
+    },
   ],
 });
 router.beforeEach((to, from, next) => {

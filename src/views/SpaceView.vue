@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <div></div>
+  <div>个人空间</div>
 </template>
 
 <style lang="less" scoped></style>

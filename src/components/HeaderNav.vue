@@ -11,6 +11,8 @@ const tokenStore = useTokenStore();
 const inputValue = ref('');
 const isLogin = ref(false);
 
+const resBaseUrl = 'http://localhost:9000/bolo/';
+
 const headInfoDate = ref({
   avatarUrl: '',
   dynamicNums: 0,
@@ -40,7 +42,7 @@ const logout = () => {
   isLogin.value = false;
   tokenStore.setToken('');
   api.get('/user/logout');
-  router.push('/');
+  router.go(0);
 };
 
 onMounted(async () => {
@@ -83,13 +85,17 @@ onMounted(async () => {
 
       <el-col class="right-entry" :span="7">
         <el-space wrap :size="30">
-          <el-link :underline="false" class="link-avatar" href="" target="">
+          <el-link :underline="false" class="link-avatar" href="/space" target="">
             <el-popover
               :width="300"
+              show-after="0"
+              hide-after="10"
               popper-style="box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px; padding: 20px;"
             >
               <template #reference>
-                <el-avatar :src="headInfoDate.avatarUrl"> 登录 </el-avatar>
+                <el-avatar :src="resBaseUrl + headInfoDate.avatarUrl">
+                  {{ headInfoDate.avatarUrl === '' ? '登录' : '用户' }}
+                </el-avatar>
               </template>
               <template #default>
                 <div style="display: flex; gap: 16px; flex-direction: column">
@@ -148,36 +154,56 @@ onMounted(async () => {
             </el-popover>
           </el-link>
           <el-link :underline="false" class="link-message" href="" target="">
-            <div class="message">
-              <el-icon>
-                <Message />
-              </el-icon>
-              <div>消息</div>
-            </div>
+            <el-popover>
+              <template #reference>
+                <div class="message">
+                  <el-icon>
+                    <Message />
+                  </el-icon>
+                  <div>消息</div>
+                </div>
+              </template>
+              <template #default> </template>
+            </el-popover>
           </el-link>
           <el-link :underline="false" class="link-dynamic" href="" target="">
-            <div class="dynamic">
-              <el-icon>
-                <Sunny />
-              </el-icon>
-              <div>动态</div>
-            </div>
+            <el-popover>
+              <template #reference>
+                <div class="dynamic">
+                  <el-icon>
+                    <Sunny />
+                  </el-icon>
+                  <div>动态</div>
+                </div>
+              </template>
+              <template #default> </template>
+            </el-popover>
           </el-link>
           <el-link :underline="false" class="link-collect" href="" target="">
-            <div class="collect">
-              <el-icon>
-                <Files />
-              </el-icon>
-              <div>收藏</div>
-            </div>
+            <el-popover>
+              <template #reference>
+                <div class="collect">
+                  <el-icon>
+                    <Files />
+                  </el-icon>
+                  <div>收藏</div>
+                </div>
+              </template>
+              <template #default> </template>
+            </el-popover>
           </el-link>
           <el-link :underline="false" class="link-history" href="" target="">
-            <div class="history">
-              <el-icon>
-                <Clock />
-              </el-icon>
-              <div>历史</div>
-            </div>
+            <el-popover>
+              <template #reference>
+                <div class="history">
+                  <el-icon>
+                    <Clock />
+                  </el-icon>
+                  <div>历史</div>
+                </div>
+              </template>
+              <template #default> </template>
+            </el-popover>
           </el-link>
         </el-space>
       </el-col>
@@ -240,19 +266,16 @@ onMounted(async () => {
     // 头像放大
     // .link-avatar {
     //   z-index: 1;
-    //   transition: all 0.4s ease-in-out;
+    //   transition: all 0.3s ease-in-out;
     //   /* 初始状态 */
     //   transform: translate(0, 0) scale(1);
     // }
 
     // .link-avatar:hover {
-    //   transform: translate(-25px, 30px) scale(2);
+    //   transform: translate(-15px, 30px) scale(2);
     // }
 
     .el-link {
-      .login-info {
-      }
-
       div {
         display: flex;
         flex-direction: column;

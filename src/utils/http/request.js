@@ -31,13 +31,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => {
     console.log('响应拦截器：', response);
-
-    // if (response.data.code !== '200') {
-    //   console.log(response);
-
-    //   // 假设业务状态码200为成功
-    //   return Promise.reject(response.data);
-    // }
     return response.data;
   },
   (error) => {

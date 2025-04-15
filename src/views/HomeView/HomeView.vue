@@ -1,8 +1,18 @@
 <script setup>
 import HeaderNav from '@/components/HeaderNav.vue';
 import router from '@/router';
-import { ref } from 'vue';
-const pathActive = ref(router.currentRoute.value.fullPath.split('/').at(-1));
+import { onBeforeMount, onBeforeUpdate, ref } from 'vue';
+const pathActive = ref('index');
+
+// 组件挂载之前
+onBeforeMount(() => {
+  pathActive.value = ref(router.currentRoute.value.fullPath.split('/').at(-1));
+});
+
+// 组件更新之前
+onBeforeUpdate(() => {
+  pathActive.value = ref(router.currentRoute.value.fullPath.split('/').at(-1));
+});
 </script>
 
 <template>
