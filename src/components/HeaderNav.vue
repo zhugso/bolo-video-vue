@@ -1,7 +1,7 @@
 <script setup>
 import api from '@/api';
 import { useTokenStore } from '@/stores/token';
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const { inputhidden = true } = defineProps(['inputhidden']);
@@ -45,7 +45,7 @@ const logout = () => {
   router.go(0);
 };
 
-onMounted(async () => {
+onBeforeMount(async () => {
   await api.get('/user/head-user').then((res) => {
     // console.log(res);
     headInfoDate.value = res.data;
@@ -56,6 +56,7 @@ onMounted(async () => {
     isLogin.value = true;
   }
 });
+// onMounted(async () => {});
 </script>
 
 <template>

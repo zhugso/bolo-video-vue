@@ -1,6 +1,6 @@
 <script setup>
 import api from '@/api';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const resBaseUrl = 'http://localhost:9000/bolo/';
@@ -50,6 +50,10 @@ onMounted(() => {
 
 <template>
   <div class="avatar">
+    <div class="top-title">
+      <div></div>
+      <div>我的头像</div>
+    </div>
     <el-avatar :size="120" :src="resBaseUrl + avatarUrl" />
     <el-upload
       class="upload-avatar"
@@ -76,11 +80,35 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .top-title {
+    width: 100%;
+    height: 50px;
+    padding-left: 30px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+
+    :first-child {
+      width: 4px;
+      height: 16px;
+
+      background-color: #00a1d6;
+      border-radius: 4px;
+    }
+    :last-child {
+      font-size: 14px;
+      color: #00a1d6;
+      margin-left: 5px;
+    }
+  }
+
   .el-avatar {
     margin-top: 50px;
   }
   .upload-avatar {
     margin-top: 30px;
+    margin-bottom: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;

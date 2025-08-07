@@ -24,7 +24,7 @@ onBeforeUpdate(() => {
 
     <el-container class="main">
       <el-aside width="150px">
-        <el-menu :default-active="pathActive" class="menu" router>
+        <el-menu style="border-right: 0" :default-active="pathActive" class="menu" router>
           <el-menu-item class="header-title" disabled>
             <span>个人中心</span>
           </el-menu-item>
@@ -39,7 +39,7 @@ onBeforeUpdate(() => {
           </el-menu-item>
         </el-menu>
       </el-aside>
-      <el-main>
+      <el-main style="--el-main-padding: 0; border-left: 1px solid #e1e2e5">
         <router-view></router-view>
       </el-main>
     </el-container>
